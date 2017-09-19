@@ -15,7 +15,6 @@ public class TelematicsService {
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(vehicleInfo);
-        System.out.println(json);
         String title = vehicleInfo.getVIN() + ".json";
         try {
             File file = new File(title);
@@ -32,7 +31,6 @@ public class TelematicsService {
             if (carFile.getName().endsWith(".json")) {
                 try {
                     Scanner fileScanner = new Scanner(carFile);
-
                     while (fileScanner.hasNext()) {
                         fileContents.add(fileScanner.nextLine());
                     }
@@ -41,10 +39,20 @@ public class TelematicsService {
                     System.out.println("Could not find file *" + carFile + "*");
                     ex.printStackTrace();
                 }
-                // You can use this to create a new instance of Scanner
             }
         }
-        System.out.println("File Contents: " + fileContents);
+        Object [] cars = fileContents.toArray(); // issue is here
+        for (int i = 0; i < cars.length; i++) {
+            System.out.println(cars[i]);
+            String newCar = mapper.writeValueAsString(cars[i]);
+            try {
+                VehicleInfo vi = mapper.readValue(newCar, VehicleInfo.class);
+                System.out.println("Vi after mapper: " + vi);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+        }
     };
 
 }
