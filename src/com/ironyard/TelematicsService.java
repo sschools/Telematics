@@ -2,6 +2,7 @@ package com.ironyard;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -42,19 +43,32 @@ public class TelematicsService {
             }
         }
         String [] cars = fileContents.toArray(new String[0]);
-        System.out.println("File contents: " + cars);
+
+        int totalCars = 0;
+        double totalMiles = 0.0;
+        double totalGas = 0.0;
+        double totalMilesSinceOil = 0.0;
+        double totalEngine = 0.0;
 
         for (int i = 0; i < cars.length; i++) {
-            System.out.println(cars[i]);
             try {
                 VehicleInfo vi = mapper.readValue(cars[i], VehicleInfo.class);
-                System.out.println("Vi after mapper: " + vi);
-                System.out.println("test part of vi: " + vi.getOdometer());
+                totalCars += 1;
+                totalMiles += vi.getOdometer();
+                totalGas += vi.getConsumption();
+                totalMilesSinceOil += vi.getMilesSinceOil();
+                totalEngine += vi.getEngineSize();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-
         }
+        double avMiles = totalMiles / totalCars;
+        double avGas = totalGas / totalCars;
+        double avMilesSinceOil = totalMilesSinceOil / totalCars;
+        double avEngine = totalEngine / totalCars;
+
+        System.out.println("Total Cars: " + totalCars);
+        System.out.println("Average Miles: " + avMiles);
 
     };
 
