@@ -41,18 +41,21 @@ public class TelematicsService {
                 }
             }
         }
-        Object [] cars = fileContents.toArray(); // issue is here
+        String [] cars = fileContents.toArray(new String[0]);
+        System.out.println("File contents: " + cars);
+
         for (int i = 0; i < cars.length; i++) {
             System.out.println(cars[i]);
-            String newCar = mapper.writeValueAsString(cars[i]);
             try {
-                VehicleInfo vi = mapper.readValue(newCar, VehicleInfo.class);
+                VehicleInfo vi = mapper.readValue(cars[i], VehicleInfo.class);
                 System.out.println("Vi after mapper: " + vi);
+                System.out.println("test part of vi: " + vi.getOdometer());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
 
         }
+
     };
 
 }
