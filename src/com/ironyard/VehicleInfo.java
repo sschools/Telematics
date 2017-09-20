@@ -1,11 +1,16 @@
 package com.ironyard;
 
+import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+
 public class VehicleInfo {
     private int VIN;
     private double odometer;
     private double consumption;
     private double milesSinceOil;
     private double engineSize;
+
+    DecimalFormat df = new DecimalFormat("#.0");
 
     public VehicleInfo() {
 
@@ -49,5 +54,9 @@ public class VehicleInfo {
 
     public void setEngineSize(double engineSize) {
         this.engineSize = engineSize;
+    }
+
+    public String milesPerGallon() {
+        return (df.format(this.odometer / this.consumption));
     }
 }

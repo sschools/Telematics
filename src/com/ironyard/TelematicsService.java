@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
@@ -63,10 +64,12 @@ public class TelematicsService {
             }
         }
 
-        double avMiles = totalMiles / totalCars;
-        double avGas = totalGas / totalCars;
-        double avMilesSinceOil = totalMilesSinceOil / totalCars;
-        double avEngine = totalEngine / totalCars;
+        DecimalFormat df = new DecimalFormat("#.0");
+
+        String avMiles = df.format(totalMiles / totalCars);
+        String avGas = df.format(totalGas / totalCars);
+        String avMilesSinceOil = df.format(totalMilesSinceOil / totalCars);
+        String avEngine = df.format(totalEngine / totalCars);
 
         try {
             File file = new File("dashboard.html");
@@ -86,13 +89,13 @@ public class TelematicsService {
                     "    <h1 align=\"center\">History</h1>\n" +
                     "    <table align=\"center\" border=\"1\">\n" +
                     "        <tr>\n" +
-                    "            <th>VIN</th><th>Odometer (miles)</th><th>Consumption (gallons)</th><th>Last Oil Change</th><th>Engine Size (liters)</th>\n" +
+                    "            <th>VIN</th><th>Odometer (miles)</th><th>Consumption (gallons)</th><th>Last Oil Change</th><th>Engine Size (liters)</th><th>Gas Mileage</th>\n" +
                     "        </tr>\n");
             for (int i = 0; i < cars.length; i++) {
                 try {
                     VehicleInfo vi = mapper.readValue(cars[i], VehicleInfo.class);
                     fileWriter.write("<tr>\n" +
-                            "            <td align=\"center\">"+vi.getVIN()+"</td><td align=\"center\">"+vi.getOdometer()+"</td><td align=\"center\">"+vi.getConsumption()+"</td><td align=\"center\">"+vi.getMilesSinceOil()+"</td align=\"center\"><td align=\"center\">"+vi.getEngineSize()+"</td>\n" +
+                            "            <td align=\"center\">"+vi.getVIN()+"</td><td align=\"center\">"+vi.getOdometer()+"</td><td align=\"center\">"+vi.getConsumption()+"</td><td align=\"center\">"+vi.getMilesSinceOil()+"</td align=\"center\"><td align=\"center\">"+vi.getEngineSize()+"</td><td align=\"center\">"+vi.milesPerGallon()+"</td\n" +
                             "        </tr>\n");
                 } catch (IOException ex) {
                     ex.printStackTrace();
