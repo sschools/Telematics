@@ -62,13 +62,49 @@ public class TelematicsService {
                 ex.printStackTrace();
             }
         }
+
         double avMiles = totalMiles / totalCars;
         double avGas = totalGas / totalCars;
         double avMilesSinceOil = totalMilesSinceOil / totalCars;
         double avEngine = totalEngine / totalCars;
 
-        System.out.println("Total Cars: " + totalCars);
-        System.out.println("Average Miles: " + avMiles);
+        try {
+            File file = new File("dashboard.html");
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write("<html>\n");
+            fileWriter.write("<title>Vehicle Telematics Dashboard</title>\n");
+            fileWriter.write("<body>\n");
+            fileWriter.write("<h1 align=\"center\">Averages for " + totalCars + " vehicles</h1>\n");
+            fileWriter.write("<table align=\"center\">\n" +
+                    "        <tr>\n" +
+                    "            <th>Odometer (miles) |</th><th>Consumption (gallons) |</th><th>Last Oil Change |</th><th>Engine Size (liters)</th>\n" +
+                    "        </tr>\n" +
+                    "        <tr>\n");
+            fileWriter.write("<td align=\"center\">" + avMiles + "</td><td align=\"center\">" +avGas + "</td><td align=\"center\">" + avMilesSinceOil + "</td align=\"center\"><td align=\"center\">" + avEngine + "</td>");
+            fileWriter.write("</tr>\n" +
+                    "    </table>\n" +
+                    "    <h1 align=\"center\">History</h1>\n" +
+                    "    <table align=\"center\" border=\"1\">\n" +
+                    "        <tr>\n" +
+                    "            <th>VIN</th><th>Odometer (miles)</th><th>Consumption (gallons)</th><th>Last Oil Change</th><th>Engine Size (liters)</th>\n" +
+                    "        </tr>\n");
+            for (int i = 0; i < cars.length; i++) {
+                try {
+                    VehicleInfo vi = mapper.readValue(cars[i], VehicleInfo.class);
+                    fileWriter.write("<tr>\n" +
+                            "            <td align=\"center\">"+vi.getVIN()+"</td><td align=\"center\">"+vi.getOdometer()+"</td><td align=\"center\">"+vi.getConsumption()+"</td><td align=\"center\">"+vi.getMilesSinceOil()+"</td align=\"center\"><td align=\"center\">"+vi.getEngineSize()+"</td>\n" +
+                            "        </tr>\n");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            fileWriter.write("</table>\n" +
+                    "  </body>\n" +
+                    "</html>");
+            fileWriter.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
     };
 
